@@ -4,7 +4,7 @@
 // - protoc             v4.24.3
 // source: proto/proto.proto
 
-package Mandatory_Handin_4_Distributed_Mutual_Exclusion
+package proto
 
 import (
 	context "context"
@@ -19,16 +19,18 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Node_PermissionToEnter_FullMethodName = "/proto.Node/PermissionToEnter"
-	Node_BroadcastExit_FullMethodName     = "/proto.Node/BroadcastExit"
+	Node_RequestToEnterSection_FullMethodName = "/proto.Node/RequestToEnterSection"
+	Node_EnterSection_FullMethodName          = "/proto.Node/EnterSection"
+	Node_LeaveSection_FullMethodName          = "/proto.Node/LeaveSection"
 )
 
 // NodeClient is the client API for Node service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type NodeClient interface {
-	PermissionToEnter(ctx context.Context, in *NodeMessage, opts ...grpc.CallOption) (*NodeMessage, error)
-	BroadcastExit(ctx context.Context, in *NodeMessage, opts ...grpc.CallOption) (*NodeMessage, error)
+	RequestToEnterSection(ctx context.Context, in *NodeMessage, opts ...grpc.CallOption) (*NodeMessage, error)
+	EnterSection(ctx context.Context, in *NodeMessage, opts ...grpc.CallOption) (*NodeMessage, error)
+	LeaveSection(ctx context.Context, in *NodeMessage, opts ...grpc.CallOption) (*NodeMessage, error)
 }
 
 type nodeClient struct {
@@ -39,18 +41,27 @@ func NewNodeClient(cc grpc.ClientConnInterface) NodeClient {
 	return &nodeClient{cc}
 }
 
-func (c *nodeClient) PermissionToEnter(ctx context.Context, in *NodeMessage, opts ...grpc.CallOption) (*NodeMessage, error) {
+func (c *nodeClient) RequestToEnterSection(ctx context.Context, in *NodeMessage, opts ...grpc.CallOption) (*NodeMessage, error) {
 	out := new(NodeMessage)
-	err := c.cc.Invoke(ctx, Node_PermissionToEnter_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Node_RequestToEnterSection_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *nodeClient) BroadcastExit(ctx context.Context, in *NodeMessage, opts ...grpc.CallOption) (*NodeMessage, error) {
+func (c *nodeClient) EnterSection(ctx context.Context, in *NodeMessage, opts ...grpc.CallOption) (*NodeMessage, error) {
 	out := new(NodeMessage)
-	err := c.cc.Invoke(ctx, Node_BroadcastExit_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Node_EnterSection_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *nodeClient) LeaveSection(ctx context.Context, in *NodeMessage, opts ...grpc.CallOption) (*NodeMessage, error) {
+	out := new(NodeMessage)
+	err := c.cc.Invoke(ctx, Node_LeaveSection_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -61,8 +72,9 @@ func (c *nodeClient) BroadcastExit(ctx context.Context, in *NodeMessage, opts ..
 // All implementations must embed UnimplementedNodeServer
 // for forward compatibility
 type NodeServer interface {
-	PermissionToEnter(context.Context, *NodeMessage) (*NodeMessage, error)
-	BroadcastExit(context.Context, *NodeMessage) (*NodeMessage, error)
+	RequestToEnterSection(context.Context, *NodeMessage) (*NodeMessage, error)
+	EnterSection(context.Context, *NodeMessage) (*NodeMessage, error)
+	LeaveSection(context.Context, *NodeMessage) (*NodeMessage, error)
 	mustEmbedUnimplementedNodeServer()
 }
 
@@ -70,11 +82,14 @@ type NodeServer interface {
 type UnimplementedNodeServer struct {
 }
 
-func (UnimplementedNodeServer) PermissionToEnter(context.Context, *NodeMessage) (*NodeMessage, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PermissionToEnter not implemented")
+func (UnimplementedNodeServer) RequestToEnterSection(context.Context, *NodeMessage) (*NodeMessage, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RequestToEnterSection not implemented")
 }
-func (UnimplementedNodeServer) BroadcastExit(context.Context, *NodeMessage) (*NodeMessage, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method BroadcastExit not implemented")
+func (UnimplementedNodeServer) EnterSection(context.Context, *NodeMessage) (*NodeMessage, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EnterSection not implemented")
+}
+func (UnimplementedNodeServer) LeaveSection(context.Context, *NodeMessage) (*NodeMessage, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LeaveSection not implemented")
 }
 func (UnimplementedNodeServer) mustEmbedUnimplementedNodeServer() {}
 
@@ -89,38 +104,56 @@ func RegisterNodeServer(s grpc.ServiceRegistrar, srv NodeServer) {
 	s.RegisterService(&Node_ServiceDesc, srv)
 }
 
-func _Node_PermissionToEnter_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Node_RequestToEnterSection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(NodeMessage)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(NodeServer).PermissionToEnter(ctx, in)
+		return srv.(NodeServer).RequestToEnterSection(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Node_PermissionToEnter_FullMethodName,
+		FullMethod: Node_RequestToEnterSection_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NodeServer).PermissionToEnter(ctx, req.(*NodeMessage))
+		return srv.(NodeServer).RequestToEnterSection(ctx, req.(*NodeMessage))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Node_BroadcastExit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Node_EnterSection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(NodeMessage)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(NodeServer).BroadcastExit(ctx, in)
+		return srv.(NodeServer).EnterSection(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Node_BroadcastExit_FullMethodName,
+		FullMethod: Node_EnterSection_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NodeServer).BroadcastExit(ctx, req.(*NodeMessage))
+		return srv.(NodeServer).EnterSection(ctx, req.(*NodeMessage))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Node_LeaveSection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NodeMessage)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NodeServer).LeaveSection(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Node_LeaveSection_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NodeServer).LeaveSection(ctx, req.(*NodeMessage))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -133,12 +166,16 @@ var Node_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*NodeServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "PermissionToEnter",
-			Handler:    _Node_PermissionToEnter_Handler,
+			MethodName: "RequestToEnterSection",
+			Handler:    _Node_RequestToEnterSection_Handler,
 		},
 		{
-			MethodName: "BroadcastExit",
-			Handler:    _Node_BroadcastExit_Handler,
+			MethodName: "EnterSection",
+			Handler:    _Node_EnterSection_Handler,
+		},
+		{
+			MethodName: "LeaveSection",
+			Handler:    _Node_LeaveSection_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
