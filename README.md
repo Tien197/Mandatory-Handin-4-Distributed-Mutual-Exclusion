@@ -3,6 +3,16 @@
 Distributed Systems (B-SWU & K-SD, Autumn 2023)
 * Mandatory Hand-in 4 - Distributed Mutual Exclusion
 * Submision Due Date: *`Tuesday, 14 November 2023, 23:59`*
+* 
+## How to run
+The different nodes are supposed to run in their own terminal. 
+```bash
+go run nodes/node.go -port 8080 -id 1
+go run nodes/node.go -port 8081 -id 2
+go run nodes/node.go -port 8082 -id 3
+```
+
+Since the nodes' ports are predetermined in the program, the ports in the command must be the same as stated. 
 
 ## Author
 * Tien Cam Ly (tily@itu.dk)
