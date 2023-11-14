@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package proto;
+
+option go_package = "github.com/Tien197/Mandatory-Handin-4-Distributed-Mutual-Exclusion";
+// when changing the file
+/*
+protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative proto/proto.proto
+ */
+
+
+message NodeMessage {
+  int64 id = 1;
+  string message = 2;
+  bool permission = 3;
+}
+
+service Node {
+  rpc PermissionToEnter(NodeMessage) returns (NodeMessage);
+  rpc BroadcastExit(NodeMessage) returns (NodeMessage);
+}
+
+
